@@ -1,7 +1,7 @@
 # Branch Protection Rules Configuration
 # File: .github/branch-protection-rules.yml
 
-# Main/Master Branch Protection
+# Master Branch Protection
 master:
   protection:
     required_status_checks:
