@@ -1,0 +1,51 @@
+trigger:
+  branches:
+    include:
+      - main
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+# 1. Checkout the code from the GitHub repository
+- task: Checkout@1
+
+# 2. Install Node.js (choose your desired version)
+- task: UseNode@1
+  inputs:
+    versionSpec: '16.x'  # Adjust the Node.js version as needed
+    checkLatest: true
+
+# 3. Install dependencies
+- script: |
+    npm install
+  displayName: 'Install dependencies'
+
+# 4. Run tests
+- script: |
+    npm test
+  displayName: 'Run tests'
+
+# 5. Build the project (if applicable)
+- script: |
+    npm run build
+  displayName: 'Build project'
+
+# 6. Deploy step (optional - add deployment mechanism here)
+# Example: Zip the files for release
+- task: ArchiveFiles@2
+  inputs:
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+    includeRootFolder: false
+    archiveType: 'zip'
+    archiveFile: '$(Build.ArtifactStagingDirectory)/node-hello.zip'
+    replaceExistingArchive: true
+  displayName: 'Archive the build output'
+
+# 7. Publish the artifact for further use (optional)
+- task: PublishBuildArtifacts@1
+  inputs:
+    PathtoPublish: '$(Build.ArtifactStagingDirectory)/node-hello.zip'
+    ArtifactName: 'drop'
+    publishLocation: 'Container'
+  displayName: 'Publish artifacts'
